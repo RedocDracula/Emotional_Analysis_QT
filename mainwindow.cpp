@@ -203,8 +203,8 @@ void MainWindow::on_saveButton_clicked()
 
         std::string xmldestination = destination + ".xml";
 
-        //FILE * pfile = fopen (xmldestination.c_str() ,"a+");
-            xmlUpdate (snip_number, startsnip, endsnip,ui->ageBox->toPlainText().toStdString(), ui->genderBox->currentText().toStdString(), ui->identityBox->toPlainText().toStdString(), xmldestination.c_str() );
+
+            xmlUpdate (snip_number, startsnip, endsnip,ui->ageBox->toPlainText().toStdString(), ui->genderBox->currentText().toStdString(), ui->identityBox->toPlainText().toStdString(),ui->semanticBox->currentText().toStdString(), xmldestination.c_str() );
         //close(pfile);
     } else {
         QMessageBox msg;

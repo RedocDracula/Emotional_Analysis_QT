@@ -207,7 +207,7 @@ p, li { white-space: pre-wrap; }
      <enum>Qt::NoContextMenu</enum>
     </property>
     <property name="text">
-     <string>pause</string>
+     <string>Pause</string>
     </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">

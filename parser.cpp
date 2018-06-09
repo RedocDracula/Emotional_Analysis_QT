@@ -88,26 +88,23 @@ void getTime (char * file) {
 using namespace std;
 
 
-void xmlUpdate ( int snipNo, string timeBegin, string timeEnd, string age, string gender, string identity,const char * fd) {
+void xmlUpdate ( int snipNo, string timeBegin, string timeEnd, string age, string gender, string identity,string semantic ,const char * fd) {
     FILE * fp = fopen (fd,"r+");
-
     if (fp==NULL) { //FILE is EMPTY
         fp = fopen(fd,"w+"); // Create File
         fprintf(fp,"<xml>\n");
         fprintf(fp,"</xml>\n");
         fclose(fp);
     }
-   fp = fopen (fd,"r+");
-
+    fp = fopen (fd,"r+");
     fseek(fp,-7,SEEK_END);
-
     fprintf(fp,"\n\t<snip%d>\n",snipNo);
     fprintf(fp,"\t\t<durationStart> %s  </durationStart>\n",timeBegin.c_str());
     fprintf(fp,"\t\t<durationEnd> %s  </durationEnd>\n",timeEnd.c_str());
     fprintf(fp,"\t\t<identity> %s  </identity>\n",identity.c_str());
     fprintf(fp,"\t\t<gender> %s  </gender>\n",gender.c_str());
     fprintf(fp,"\t\t<age> %s  </age>\n",age.c_str());
-  //fprintf(fp,"\t\t<semantic> %s  </semantic>\n",semantic.c_str());
+    fprintf(fp,"\t\t<semantic> %s  </semantic>\n",semantic.c_str());
     fprintf(fp,"\t</snip%d>\n",snipNo);
     fprintf(fp,"</xml>\n");
     fclose(fp);

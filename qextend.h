@@ -33,7 +33,12 @@ class Qextend : public QLabel
             if (subLoaded) {
                     std:: vector <long long int> :: iterator pointer = lower_bound(startTime.begin(),startTime.end(),currtime);
                     int index = pointer - startTime.begin();
-                    this->setText(QString::fromUtf8(subtitle[index-1].c_str()));
+                    //auto pEnd  = upper_bound (endTime.begin(),endTime.end(),currtime);
+                    if (currtime<endTime[index-1]) {
+                        this->setText(QString::fromUtf8(subtitle[index-1].c_str()));
+                    } else {
+                        this->setText("\0");
+                    }
             }
          }
 
