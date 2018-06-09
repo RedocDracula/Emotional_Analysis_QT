@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->genderLabel->setEnabled(false);
     ui->ageLabel->setEnabled(false);
     ui->pause->setEnabled(false);
+    ui->replayButton->setEnabled(false);
 
 
 
@@ -63,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(player,&QMediaPlayer::positionChanged,ui->subbox,&Qextend::timefunc);
 
     ui->subbox->setVisible(true);
-    ui->tet->addWidget(ui->subbox);
+    ui->timeLayout->addWidget(ui->subbox);
 
     connect(player,&QMediaPlayer::positionChanged,ui->subText,&Qextend::setSubtitle);
     ui->subText->setVisible(true);
@@ -90,6 +91,7 @@ void MainWindow::setEnable() {
     ui->pause->setEnabled(true);
     ui->slider->setEnabled(true);
     slid->setEnabled(true);
+    ui->replayButton->setEnabled(true);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -159,7 +161,7 @@ void MainWindow::on_saveButton_clicked()
     msgBox.setText("The document has been modified.");
     msgBox.exec();*/
     bool validated = false;
-    bool openedEarlier = false;
+
 
     validated = validate();
 
@@ -239,4 +241,14 @@ void MainWindow::on_skipButton_clicked()
     std:: vector <long long int> :: iterator gotonext;
     gotonext = lower_bound(startTime.begin(),startTime.end(),current_time);
     player->setPosition(*gotonext);
+}
+
+void MainWindow::on_replayButton_clicked()
+{
+    //
+    qint64 currPosition = player->position();
+    std:: vector <long long int> :: iterator myveciterator = lower_bound (startTime.begin(), startTime.end(), currPosition);
+    myveciterator--;
+    player->setPosition(*myveciterator);
+
 }

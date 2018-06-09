@@ -15,8 +15,7 @@ std::vector <long long int> endTime;
 std::vector <std::string> sstarttime;
 std::vector <std::string> sendtime;
 std::vector <std::string > subtitle;
-
-
+bool parsed = false;
 
 long long int convert (char * temp) {
     int hh,mm,ss,ms;
@@ -78,7 +77,7 @@ void getTime (char * file) {
 
 
     qDebug() << subtitle.size();
-
+    parsed = true;
 
     fclose(fp);
     fclose(fout);

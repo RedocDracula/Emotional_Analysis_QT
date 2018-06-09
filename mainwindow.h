@@ -23,17 +23,12 @@ public:
 
 private slots:
     void on_actionOpen_triggered();
-
     void on_actionQuit_triggered();
-
     void on_pause_clicked();
-
     void on_saveButton_clicked();
-
     void on_actionAdd_Sub_triggered();
-
     void on_skipButton_clicked();
-
+    void on_replayButton_clicked();
 
 private:
     Ui::MainWindow *ui;
