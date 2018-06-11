@@ -73,12 +73,7 @@ void getTime (char * file) {
 
         }
 
-        qDebug() << "Total Lines Extracted "<<subtitle.size();
-
-
-    qDebug() << subtitle.size();
     parsed = true;
-
     fclose(fp);
     fclose(fout);
 

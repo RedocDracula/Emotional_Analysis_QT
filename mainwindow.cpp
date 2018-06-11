@@ -1,4 +1,3 @@
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QtCore>
@@ -70,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->subText->setVisible(true);
     ui->subLayout->addWidget(ui->subText);
 
+
 }
 
 MainWindow::~MainWindow()
@@ -115,14 +115,10 @@ void MainWindow::on_actionOpen_triggered()
 }
 
 void MainWindow::on_actionQuit_triggered()
+
 {
     qDebug()<<"Quit Triggered";
-    //QStringList arguments { "test.py"};
-   /*QProcess p;
-    p.start("python3", arguments);
-    p.waitForFinished();*/
-
-
+    QApplication::quit();
 }
 
 void write() {
@@ -207,7 +203,7 @@ void MainWindow::on_saveButton_clicked()
 
 
             xmlUpdate (snip_number, startsnip, endsnip,ui->ageBox->toPlainText().toStdString(), ui->genderBox->currentText().toStdString(), ui->identityBox->toPlainText().toStdString(),ui->semanticBox->currentText().toStdString(), xmldestination.c_str() );
-        //close(pfile);
+
     } else {
         QMessageBox msg;
         msg.setText("Sorry, Age is not valid " );
@@ -236,7 +232,6 @@ void MainWindow::on_actionAdd_Sub_triggered()
 
 void MainWindow::on_skipButton_clicked()
 {
- // Todo
     qint64 current_time = player->position();
     std:: vector <long long int> :: iterator gotonext;
     gotonext = lower_bound(startTime.begin(),startTime.end(),current_time);
@@ -245,7 +240,6 @@ void MainWindow::on_skipButton_clicked()
 
 void MainWindow::on_replayButton_clicked()
 {
-    //
     qint64 currPosition = player->position();
     std:: vector <long long int> :: iterator myveciterator = lower_bound (startTime.begin(), startTime.end(), currPosition);
     myveciterator--;

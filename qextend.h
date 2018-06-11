@@ -19,15 +19,15 @@ class Qextend : public QLabel
     Q_OBJECT
 
     public:
-    explicit Qextend(QWidget *parent ) : QLabel()
+    explicit Qextend(QWidget *parent) : QLabel()
     {}
 
     public slots:
 
-        void timefunc(qint64 micro)
+        void timefunc(qint64 milliseconds)
         {
-            micro = micro/1000;
-            this->setText(QDateTime::fromTime_t(micro).toUTC().toString("hh:mm:ss"));
+            milliseconds/=1000; // convert
+            this->setText(QDateTime::fromTime_t(milliseconds).toUTC().toString("hh:mm:ss"));
         }
 
         void setSubtitle (qint64 currtime) {
