@@ -49,6 +49,12 @@ long long int convert (char * temp) {
 void getTime (char * file) {
     char  tempString [maxCharacters+1];
     FILE * fp = fopen(file,"r");
+    if(fp==NULL)
+    {
+        qDebug()<<"Error opening file!! \n";
+        return;
+    }
+
     FILE * fout = fopen ("output.txt","w");
     char string1[25];
     char string2[25];
@@ -83,14 +89,18 @@ using namespace std;
 
 
 void xmlUpdate ( int snipNo, string timeBegin, string timeEnd, string age, string gender, string identity,string semantic ,const char * fd) {
-    FILE * fp = fopen (fd,"r+");
+    FILE * fp;
+
+    fp = fopen (fd,"r+");
     if (fp==NULL) { //FILE is EMPTY
         fp = fopen(fd,"w+"); // Create File
         fprintf(fp,"<xml>\n");
         fprintf(fp,"</xml>\n");
         fclose(fp);
     }
+
     fp = fopen (fd,"r+");
+
     fseek(fp,-7,SEEK_END);
     fprintf(fp,"\n\t<snip%d>\n",snipNo);
     fprintf(fp,"\t\t<durationStart> %s  </durationStart>\n",timeBegin.c_str());
@@ -102,6 +112,37 @@ void xmlUpdate ( int snipNo, string timeBegin, string timeEnd, string age, strin
     fprintf(fp,"\t</snip%d>\n",snipNo);
     fprintf(fp,"</xml>\n");
     fclose(fp);
+}
+
+bool detect( cv::Mat& img)
+{
+    cv::CascadeClassifier cascade, nestedCascade;
+        double scale=1;
+
+
+     nestedCascade.load("/home/jitu_srikant/untitled/haarcascade_eye_tree_eyeglasses.xml") ;
+
+
+     cascade.load( "/home/jitu_srikant/Documents/opencv/opencv-3.4.1-source/data/haarcascades/haarcascade_frontalface_default.xml") ;
+
+        std::vector<cv::Rect> faces;
+    cv::Mat gray, smallImg;
+
+    cv::cvtColor( img, gray, cv::COLOR_BGR2GRAY );
+    double fx = 1 / scale;
+
+
+    cv::resize( gray, smallImg, cv::Size(), fx, fx, cv::INTER_LINEAR );
+    cv::equalizeHist( smallImg, smallImg );
+
+    cascade.detectMultiScale(smallImg, faces, 1.1,2,0|cv::CASCADE_SCALE_IMAGE, cv::Size(30,30 ) );
+
+
+    if (faces.size() == 0 )
+        return false;
+    } else {
+        return true;
+    }
 }
 
 #endif

@@ -12,6 +12,10 @@
 #include <QProcess>
 #include "qextend.h"
 #include "parser.cpp"
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/objdetect.hpp>
+#include <opencv2/core/core.hpp>
 
 
 extern std:: vector <long long int> startTime;
@@ -23,7 +27,9 @@ bool subLoaded = false;
 
 
 
+
 char *sourceVid =  new char[100];
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -43,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->ageLabel->setEnabled(false);
     ui->pause->setEnabled(false);
     ui->replayButton->setEnabled(false);
+    ui->extractButton->setEnabled(false);
 
 
 
@@ -92,6 +99,7 @@ void MainWindow::setEnable() {
     ui->slider->setEnabled(true);
     slid->setEnabled(true);
     ui->replayButton->setEnabled(true);
+    ui->extractButton->setEnabled(true);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -118,7 +126,15 @@ void MainWindow::on_actionQuit_triggered()
 
 {
     qDebug()<<"Quit Triggered";
-    QApplication::quit();
+    //QApplication::quit();
+    // image = imread(argv[1], CV_LOAD_IMAGE_COLOR);
+    cv:: Mat image = cv::imread("/home/jitu_srikant/Desktop/index.jpeg", CV_LOAD_IMAGE_COLOR);
+    //cv::imshow( "Face Detection", image );
+    qDebug() << "sdgsgd\n";
+    if (detect(image)) {
+     qDebug() << "Faceng";
+    }
+
 }
 
 void write() {
@@ -162,28 +178,27 @@ void MainWindow::on_saveButton_clicked()
     validated = validate();
 
     if (validated) {
+
         snip_number++;
 
-        qDebug() <<player->position()<< "\n";
-        qDebug()<<"Save Triggered";
         qint64 currPos = player->position(); //get the current position in video
         std:: string startsnip, endsnip,command, source(sourceVid); // stores the range of where to cut.
+
         std:: vector <long long int> :: iterator myveciterator;
         myveciterator = lower_bound(startTime.begin(),startTime.end(),currPos);
+
         int index = myveciterator - startTime.begin();
         startsnip = sstarttime[index], endsnip = sendtime[index];
-
         startsnip.erase(startsnip.end()-4 ,startsnip.end());
         endsnip.erase(endsnip.end()-4 ,endsnip.end());
 
         std::string destination = source;
-       // std::stringForce = "ffmpeg -i " + source + "-force_key_frames"
+
         destination.erase(destination.end()-4 ,destination.end() );
         command = "ffmpeg -i " + source + " -ss " + startsnip + " -to " + endsnip + " -async 1 -strict -2 " + "-preset ultrafast " + "-y "  + destination + "_cut" + std::to_string(snip_number) +".mp4" ;
-        std::cout<<command<<"\n\n";
-
         int cmdReturn = 1;
         player->pause();
+
 
         QMessageBox *mbox = new QMessageBox;
         mbox->setWindowTitle(tr("Please Wait..."));
@@ -191,7 +206,9 @@ void MainWindow::on_saveButton_clicked()
         mbox->show();
         mbox->setStandardButtons(0);
 
+
         cmdReturn = system(command.c_str());
+
         if (cmdReturn==0) {
             player->play();
             mbox->hide();
@@ -201,8 +218,8 @@ void MainWindow::on_saveButton_clicked()
 
         std::string xmldestination = destination + ".xml";
 
-
-            xmlUpdate (snip_number, startsnip, endsnip,ui->ageBox->toPlainText().toStdString(), ui->genderBox->currentText().toStdString(), ui->identityBox->toPlainText().toStdString(),ui->semanticBox->currentText().toStdString(), xmldestination.c_str() );
+        //create an xml file with details (age,sentiment etc)
+        xmlUpdate (snip_number, startsnip, endsnip,ui->ageBox->toPlainText().toStdString(), ui->genderBox->currentText().toStdString(), ui->identityBox->toPlainText().toStdString(),ui->semanticBox->currentText().toStdString(), xmldestination.c_str());
 
     } else {
         QMessageBox msg;
@@ -246,3 +263,61 @@ void MainWindow::on_replayButton_clicked()
     player->setPosition(*myveciterator);
 
 }
+
+void MainWindow::on_extractButton_clicked()
+{
+    player->pause();
+    int snip_number= 0;
+    int total = startTime.size();
+    std:: string startsnip, endsnip,command, source(sourceVid);
+    std::string destination = source;
+    destination.erase(destination.end()-4 ,destination.end() );
+    std::string xmldestination = destination + ".xml";
+    FILE * fp = fopen (xmldestination.c_str(), "w");
+    fprintf(fp,"<xml>\n");
+    fprintf(fp,"</xml>\n");
+    fclose(fp);
+
+    QMessageBox *mbox = new QMessageBox;
+    mbox->setWindowTitle(tr("Please Wait..."));
+    mbox->setText("Please wait while the snip is being processed...");
+    mbox->show();
+    mbox->setStandardButtons(0);
+
+
+    for(int index =0; index<total;index++) {
+
+         snip_number++;
+         startsnip = sstarttime[index], endsnip = sendtime[index];
+         startsnip.erase(startsnip.end()-4 ,startsnip.end());
+         endsnip.erase(endsnip.end()-4 ,endsnip.end());
+         command = "ffmpeg -i " + source + " -ss " + startsnip + " -to " + endsnip + " -async 1 -strict -2 " + "-preset ultrafast " + "-y "  + destination + "_cut" + std::to_string(snip_number) +".mp4" ;
+         qDebug()<<command.c_str()<<"\n\n";
+         system(command.c_str());
+
+
+         xmlUpdate (snip_number, startsnip, endsnip,ui->ageBox->toPlainText().toStdString(), ui->genderBox->currentText().toStdString(), ui->identityBox->toPlainText().toStdString(),ui->semanticBox->currentText().toStdString(), xmldestination.c_str());
+
+
+
+        // To do - Snips ek folder me jaane chahiye....
+        // XML erase hojaane chahiye...
+    }
+    mbox->close();
+
+    QMessageBox msgBox;
+    msgBox.setText("Extraction Completed");
+    msgBox.setInformativeText("All snips successfully extracted...");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+
+
+
+
+}
+
+
+
+
+

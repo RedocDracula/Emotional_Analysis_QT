@@ -30,6 +30,8 @@ private slots:
     void on_skipButton_clicked();
     void on_replayButton_clicked();
 
+    void on_extractButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QMediaPlayer * player;

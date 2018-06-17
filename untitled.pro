@@ -39,4 +39,11 @@ RESOURCES += \
     resources.qrc
 
 DISTFILES += \
-    test.py
+    test.py \
+    haarcascade_eye_tree_eyeglasses.xml \
+    haarcascade_frontalcatface.xml
+
+INCLUDEPATH += "-I/usr/local/include/opencv"
+
+LIBS += -L/usr/local/lib -lopencv_videostab -lopencv_ml -lopencv_dnn -lopencv_photo -lopencv_stitching -lopencv_objdetect -lopencv_calib3d -lopencv_features2d -lopencv_flann -lopencv_superres -lopencv_shape -lopencv_video -lopencv_highgui -lopencv_videoio -lopencv_imgcodecs -lopencv_imgproc -lopencv_core
+
