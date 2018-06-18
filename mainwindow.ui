@@ -324,7 +324,7 @@ p, li { white-space: pre-wrap; }
      <string>Exrtact all</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="faceButton">
     <property name="geometry">
      <rect>
       <x>660</x>
@@ -335,6 +335,19 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>Extract Faces</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="skipTickBox">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>180</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Auto Skip (Face)</string>
     </property>
    </widget>
    <zorder>layoutWidget</zorder>
@@ -355,7 +368,8 @@ p, li { white-space: pre-wrap; }
    <zorder>verticalLayoutWidget_3</zorder>
    <zorder>replayButton</zorder>
    <zorder>extractButton</zorder>
-   <zorder>pushButton</zorder>
+   <zorder>faceButton</zorder>
+   <zorder>skipTickBox</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="enabled">

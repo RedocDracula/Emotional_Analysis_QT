@@ -12,10 +12,12 @@
 #include <QProcess>
 #include "qextend.h"
 #include "parser.cpp"
+
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/objdetect.hpp>
 #include <opencv2/core/core.hpp>
+
 
 
 extern std:: vector <long long int> startTime;
@@ -26,6 +28,7 @@ bool vidLoaded = false;
 bool subLoaded = false;
 
 
+bool detect(cv:: Mat & img);
 
 
 char *sourceVid =  new char[100];
@@ -50,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pause->setEnabled(false);
     ui->replayButton->setEnabled(false);
     ui->extractButton->setEnabled(false);
+    ui->faceButton->setEnabled(false);
+    ui->skipTickBox->setEnabled(false);
 
 
 
@@ -77,6 +82,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->subLayout->addWidget(ui->subText);
 
 
+
+
+
+
 }
 
 MainWindow::~MainWindow()
@@ -100,6 +109,8 @@ void MainWindow::setEnable() {
     slid->setEnabled(true);
     ui->replayButton->setEnabled(true);
     ui->extractButton->setEnabled(true);
+    ui->faceButton->setEnabled(true);
+    ui->skipTickBox->setEnabled(true);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -121,6 +132,7 @@ void MainWindow::on_actionOpen_triggered()
     }
 
 }
+
 
 void MainWindow::on_actionQuit_triggered()
 
@@ -169,9 +181,7 @@ bool validate ()  {
 
 void MainWindow::on_saveButton_clicked()
 {
-    /*QMessageBox msgBox;
-    msgBox.setText("The document has been modified.");
-    msgBox.exec();*/
+
     bool validated = false;
 
 
@@ -264,6 +274,11 @@ void MainWindow::on_replayButton_clicked()
 
 }
 
+
+
+
+
+
 void MainWindow::on_extractButton_clicked()
 {
     player->pause();
@@ -320,4 +335,87 @@ void MainWindow::on_extractButton_clicked()
 
 
 
+// ffmpeg -i video.webm -ss 00:00:07.000 -vframes 1 thumb.jpg
+
+void MainWindow::on_faceButton_clicked()
+{
+
+
+    player->pause();
+    int snip_number= 0;
+    int total = startTime.size();
+    std:: string startsnip, endsnip,command, source(sourceVid);
+    std::string destination = source;
+    destination.erase(destination.end()-4 ,destination.end() );
+    std::string xmldestination = destination + ".xml";
+    FILE * fp = fopen (xmldestination.c_str(), "w");
+    fprintf(fp,"<xml>\n");
+    fprintf(fp,"</xml>\n");
+    fclose(fp);
+    QMessageBox *mbox = new QMessageBox;
+    mbox->setWindowTitle(tr("Please Wait..."));
+    mbox->setText("Please wait while the snip is being processed...");
+    mbox->show();
+    mbox->setStandardButtons(0);
+
+
+    for(int index =0; index<total;index++) {
+
+         snip_number++;
+         startsnip = sstarttime[index], endsnip = sendtime[index];
+         startsnip.erase(startsnip.end()-4 ,startsnip.end());
+         endsnip.erase(endsnip.end()-4 ,endsnip.end());
+         // if face exists then....
+
+         command = "ffmpeg -i " + source + " -ss " + startsnip + " -to " + endsnip + " -async 1 -strict -2 " + "-preset ultrafast " + "-y "  + destination + "_cut" + std::to_string(snip_number) +".mp4" ;
+         qDebug()<<command.c_str()<<"\n\n";
+         // take snip of and check
+
+         system(command.c_str());
+
+
+         xmlUpdate (snip_number, startsnip, endsnip,ui->ageBox->toPlainText().toStdString(), ui->genderBox->currentText().toStdString(), ui->identityBox->toPlainText().toStdString(),ui->semanticBox->currentText().toStdString(), xmldestination.c_str());
+
+
+
+        // To do - Snips ek folder me jaane chahiye....
+        // XML erase hojaane chahiye...
+    }
+    mbox->close();
+
+    QMessageBox msgBox;
+    msgBox.setText("Extraction Completed");
+    msgBox.setInformativeText("All snips successfully extracted...");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
+
+}
+
+bool detect( cv::Mat& img)
+{
+    cv::CascadeClassifier cascade, nestedCascade;
+    double scale=1;
+    nestedCascade.load("/home/jitu_srikant/untitled/haarcascade_eye_tree_eyeglasses.xml") ;
+    cascade.load( "/home/jitu_srikant/Documents/opencv/opencv-3.4.1-source/data/haarcascades/haarcascade_frontalface_default.xml") ;
+
+    std::vector<cv::Rect> faces;
+    cv::Mat gray, smallImg;
+
+    cv::cvtColor( img, gray, cv::COLOR_BGR2GRAY );
+    double fx = 1 / scale;
+
+
+    cv::resize( gray, smallImg, cv::Size(), fx, fx, cv::INTER_LINEAR );
+    cv::equalizeHist( smallImg, smallImg );
+
+    cascade.detectMultiScale(smallImg, faces, 1.1,2,0|cv::CASCADE_SCALE_IMAGE, cv::Size(30,30 ) );
+
+
+    if (faces.size() == 0 ) {
+        return false;
+    } else {
+        return true;
+    }
+}
 

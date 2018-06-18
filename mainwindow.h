@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QSlider>
 #include <QFile>
+#include <QVideoFrame>
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +33,8 @@ private slots:
 
     void on_extractButton_clicked();
 
+    void on_faceButton_clicked();
+    
 private:
     Ui::MainWindow *ui;
     QMediaPlayer * player;

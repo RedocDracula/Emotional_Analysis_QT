@@ -114,36 +114,7 @@ void xmlUpdate ( int snipNo, string timeBegin, string timeEnd, string age, strin
     fclose(fp);
 }
 
-bool detect( cv::Mat& img)
-{
-    cv::CascadeClassifier cascade, nestedCascade;
-        double scale=1;
 
-
-     nestedCascade.load("/home/jitu_srikant/untitled/haarcascade_eye_tree_eyeglasses.xml") ;
-
-
-     cascade.load( "/home/jitu_srikant/Documents/opencv/opencv-3.4.1-source/data/haarcascades/haarcascade_frontalface_default.xml") ;
-
-        std::vector<cv::Rect> faces;
-    cv::Mat gray, smallImg;
-
-    cv::cvtColor( img, gray, cv::COLOR_BGR2GRAY );
-    double fx = 1 / scale;
-
-
-    cv::resize( gray, smallImg, cv::Size(), fx, fx, cv::INTER_LINEAR );
-    cv::equalizeHist( smallImg, smallImg );
-
-    cascade.detectMultiScale(smallImg, faces, 1.1,2,0|cv::CASCADE_SCALE_IMAGE, cv::Size(30,30 ) );
-
-
-    if (faces.size() == 0 )
-        return false;
-    } else {
-        return true;
-    }
-}
 
 #endif
 
