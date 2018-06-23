@@ -12,7 +12,6 @@
 #include <QProcess>
 #include "qextend.h"
 #include "parser.cpp"
-
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/objdetect.hpp>
@@ -54,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->replayButton->setEnabled(false);
     ui->extractButton->setEnabled(false);
     ui->faceButton->setEnabled(false);
-    ui->skipTickBox->setEnabled(false);
+
 
 
 
@@ -110,7 +109,7 @@ void MainWindow::setEnable() {
     ui->replayButton->setEnabled(true);
     ui->extractButton->setEnabled(true);
     ui->faceButton->setEnabled(true);
-    ui->skipTickBox->setEnabled(true);
+
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -142,10 +141,8 @@ void MainWindow::on_actionQuit_triggered()
     // image = imread(argv[1], CV_LOAD_IMAGE_COLOR);
     cv:: Mat image = cv::imread("/home/jitu_srikant/Desktop/index.jpeg", CV_LOAD_IMAGE_COLOR);
     //cv::imshow( "Face Detection", image );
-    qDebug() << "sdgsgd\n";
-    if (detect(image)) {
-     qDebug() << "Faceng";
-    }
+    QTemporaryDir die;
+    qDebug() << die.path()<<"\n";
 
 }
 
@@ -358,6 +355,7 @@ void MainWindow::on_faceButton_clicked()
     mbox->show();
     mbox->setStandardButtons(0);
 
+    QTemporaryDir dir;
 
     for(int index =0; index<total;index++) {
 
@@ -365,7 +363,14 @@ void MainWindow::on_faceButton_clicked()
          startsnip = sstarttime[index], endsnip = sendtime[index];
          startsnip.erase(startsnip.end()-4 ,startsnip.end());
          endsnip.erase(endsnip.end()-4 ,endsnip.end());
-         // if face exists then....
+         std::string imgLoc = dir.path().toStdString() + "/thumb.jpg";
+         std::string imageCommand = "ffmpeg -i " + source + " -ss " + startsnip + " -vframes 1 -y "  + imgLoc;
+         system (imageCommand.c_str());
+
+         cv::Mat image =cv::imread(imgLoc.c_str(),1);
+         //
+         if(detect (image)) {
+
 
          command = "ffmpeg -i " + source + " -ss " + startsnip + " -to " + endsnip + " -async 1 -strict -2 " + "-preset ultrafast " + "-y "  + destination + "_cut" + std::to_string(snip_number) +".mp4" ;
          qDebug()<<command.c_str()<<"\n\n";
@@ -376,7 +381,10 @@ void MainWindow::on_faceButton_clicked()
 
          xmlUpdate (snip_number, startsnip, endsnip,ui->ageBox->toPlainText().toStdString(), ui->genderBox->currentText().toStdString(), ui->identityBox->toPlainText().toStdString(),ui->semanticBox->currentText().toStdString(), xmldestination.c_str());
 
-
+    } else {
+             qDebug()<<"Skipped as Face not Fo8und\n";
+        continue;
+    }
 
         // To do - Snips ek folder me jaane chahiye....
         // XML erase hojaane chahiye...

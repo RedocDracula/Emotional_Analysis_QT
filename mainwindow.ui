@@ -337,19 +337,6 @@ p, li { white-space: pre-wrap; }
      <string>Extract Faces</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="skipTickBox">
-    <property name="geometry">
-     <rect>
-      <x>660</x>
-      <y>180</y>
-      <width>131</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Auto Skip (Face)</string>
-    </property>
-   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>semanticBox</zorder>
    <zorder>ageBox</zorder>
@@ -369,7 +356,6 @@ p, li { white-space: pre-wrap; }
    <zorder>replayButton</zorder>
    <zorder>extractButton</zorder>
    <zorder>faceButton</zorder>
-   <zorder>skipTickBox</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="enabled">
