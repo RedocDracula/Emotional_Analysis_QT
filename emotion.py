@@ -8,30 +8,37 @@ import pickle
 import os
 import nltk
 import warnings
+import gensim.models.word2vec as w2v
+
 warnings.filterwarnings(module='sklearn*', action='ignore', category=DeprecationWarning)
 
+file = open("subt.txt","r")
+sente = file.readlines()
+sente = [word.split() for word in sente]
 
 
-sente =  sys.argv[1:]
-print("Presicted Emotion",sente)
+
+
+#sente =  sys.argv[1:]
+vector = []
 thrones2vec = w2v.Word2Vec.load("thrones2vec.w2v")
-vector = np.mean([thrones2vec.wv[words.lower()] for words in sente if words in thrones2vec] or [np.zeros(300)],axis=0)
+for sentence in sente:
+        vector.append(np.mean([thrones2vec.wv[words.lower()] for words in sentence if words in thrones2vec] or [np.zeros(300)],axis=0))
+
 fp = open("svm_trained","rb")
 file_label = open("label_saved","rb")
 clf = pickle.load(fp)
 le = pickle.load(file_label)
 
-newlist = ['1']
-newlist[0] = vector
 
-predict = clf.predict(newlist)
+predict = clf.predict(vector)
 predicted = le.inverse_transform(predict)
-print (predicted)
-if predicted=='anger':
-    sys.exit(3)
-elif predicted=='joy':
-    sys.exit(1)
-elif predicted=='fear':
-    sys.exit(4)
-else:
-    sys.exit(2)
+
+ofile = open('label.txt','w')
+
+for Emotion in predicted:
+        ofile.write(Emotion)
+        ofile.write('\n')
+
+
+

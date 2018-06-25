@@ -5,6 +5,7 @@
 #include <QMenuBar>
 #include <QLabel>
 #include <QDebug>
+#include <fstream>
 #include <string>
 #include <iostream>
 #include <stdlib.h>
@@ -238,11 +239,28 @@ void MainWindow::on_saveButton_clicked()
 
 }
 
+int Labeler(std::string s)
+{
+    if(s=="joy")
+        return 1;
 
+    if(s=="anger")
+        return 3;
+
+    if(s=="fear")
+        return 4;
+
+    if(s=="sadness")
+        return 2;
+
+
+    return 0;
+}
 
 
 void MainWindow::on_actionAdd_Sub_triggered()
 {
+    FILE * fsubtitile = fopen ("subt.txt","w");
     QString subname = QFileDialog::getOpenFileName(this,"Open a file","","Subtitle File (*.srt)");
     qDebug()<<subname<<"\n";
     QByteArray ba = subname.toLatin1();
@@ -251,16 +269,26 @@ void MainWindow::on_actionAdd_Sub_triggered()
     qDebug() << "startTime Count in " <<startTime.size() <<"\n";
     std::string command="python3 emotion.py ";
     for (auto i =subtitle.begin(); i<subtitle.end();i++) {
-        std::string command_final = command + filterstring(*i);
-        //qDebug()<<command_final.c_str();
-        int cmdReturn = system(command_final.c_str());
 
-        emotion.push_back(cmdReturn/256);
+        fprintf(fsubtitile,"%s\n",filterstring(*i).c_str());
+
+
     }
-    qDebug() <<"Emotion ="<< emotion[2]<<'\n';
+    system ("python3 emotion.py");
 
-
-
+    ifstream ifile("label.txt",ios::in);
+    string Line;
+    while(!ifile.eof())
+    {
+        getline(ifile,Line);
+        int label_number = Labeler(Line);
+        emotion.push_back(label_number);
+    }
+    ifile.close();
+    for(auto i = 0 ; i < emotion.size(); i++)
+    {
+        qDebug()<<"emotion "<<i<<": "<<emotion[i]<<"\n";
+    }
     subLoaded = true;
     if (subLoaded && vidLoaded ) {
         setEnable();
