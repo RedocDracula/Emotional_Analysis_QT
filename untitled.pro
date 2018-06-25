@@ -39,9 +39,12 @@ RESOURCES += \
     resources.qrc
 
 DISTFILES += \
-    test.py \
     haarcascade_eye_tree_eyeglasses.xml \
-    haarcascade_frontalcatface.xml
+    haarcascade_frontalcatface.xml \
+    emotion.py \
+    thrones2vec.w2v \
+    label_saved \
+    svm_trained
 
 INCLUDEPATH += "-I/usr/local/include/opencv"
 

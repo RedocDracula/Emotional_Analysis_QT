@@ -21,6 +21,8 @@
 
 extern std:: vector <long long int> startTime;
 extern std:: vector <long long int> endTime;
+extern std::vector <std::string> subtitle;
+std::vector<int> emotion;
 int snip_number = 0;
 void write();
 bool vidLoaded = false;
@@ -72,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
     slid->setEnabled(false);
 
     connect(player,&QMediaPlayer::positionChanged,ui->subbox,&Qextend::timefunc);
-
+    connect(player,&QMediaPlayer::positionChanged,ui->semanticBox,&QComboExtend::setValue);
     ui->subbox->setVisible(true);
     ui->timeLayout->addWidget(ui->subbox);
 
@@ -247,6 +249,18 @@ void MainWindow::on_actionAdd_Sub_triggered()
     char *c_subname = ba.data();
     getTime(c_subname);
     qDebug() << "startTime Count in " <<startTime.size() <<"\n";
+    std::string command="python3 emotion.py ";
+    for (auto i =subtitle.begin(); i<subtitle.end();i++) {
+        std::string command_final = command + filterstring(*i);
+        //qDebug()<<command_final.c_str();
+        int cmdReturn = system(command_final.c_str());
+
+        emotion.push_back(cmdReturn/256);
+    }
+    qDebug() <<"Emotion ="<< emotion[2]<<'\n';
+
+
+
     subLoaded = true;
     if (subLoaded && vidLoaded ) {
         setEnable();

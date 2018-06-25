@@ -114,6 +114,49 @@ void xmlUpdate ( int snipNo, string timeBegin, string timeEnd, string age, strin
     fclose(fp);
 }
 
+string filterstring(string s)
+{
+    string o;
+    int check = 0;
+    int newindex = 0;
+    for(int i = 0 ; i < s.size() ; i++)
+    {
+       if(s[i]=='\\')
+          i++;
+
+       else if(s[i]=='<')
+       {
+         o.push_back(s[i]);
+         check++;
+       }
+
+       else if(s[i]=='>')
+       {
+          int length;
+           if(check>0)
+           {
+              length = o.size();
+              while(o[length-1]!='<')
+              {
+                newindex++;
+                length--;
+              }
+              length = o.size();
+              o.erase(o.begin()+length-newindex-1,o.end());
+              newindex = 0;
+              check--;
+           }
+       }
+
+
+        else if(isalpha(s[i])||s[i]==' ')
+          o.push_back(s[i]);
+    }
+
+    return o;
+}
+
+
 
 
 #endif
