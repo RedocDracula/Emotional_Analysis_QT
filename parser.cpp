@@ -119,7 +119,7 @@ string filterstring(string s)
     string o;
     int check = 0;
     int newindex = 0;
-    for(int i = 0 ; i < s.size() ; i++)
+    for(unsigned int i = 0 ; i < s.size() ; i++)
     {
        if(s[i]=='\\')
           i++;

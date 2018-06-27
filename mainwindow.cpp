@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     slid->setEnabled(false);
 
     connect(player,&QMediaPlayer::positionChanged,ui->subbox,&Qextend::timefunc);
+    connect(player,&QMediaPlayer::positionChanged,ui->subbox,&Qextend::takeSnip);
     connect(player,&QMediaPlayer::positionChanged,ui->semanticBox,&QComboExtend::setValue);
     ui->subbox->setVisible(true);
     ui->timeLayout->addWidget(ui->subbox);
@@ -244,7 +245,7 @@ int Labeler(std::string s)
     if(s=="joy")
         return 1;
 
-    if(s=="anger")
+    if(s=="anger")bool detect( cv::Mat& img)
         return 3;
 
     if(s=="fear")
@@ -259,7 +260,7 @@ int Labeler(std::string s)
 
 
 void MainWindow::on_actionAdd_Sub_triggered()
-{
+{bool detect( cv::Mat& img)
     FILE * fsubtitile = fopen ("subt.txt","w");
     QString subname = QFileDialog::getOpenFileName(this,"Open a file","","Subtitle File (*.srt)");
     qDebug()<<subname<<"\n";
@@ -285,7 +286,7 @@ void MainWindow::on_actionAdd_Sub_triggered()
         emotion.push_back(label_number);
     }
     ifile.close();
-    for(auto i = 0 ; i < emotion.size(); i++)
+    for(unsigned int i = 0 ; i < emotion.size(); i++)
     {
         qDebug()<<"emotion "<<i<<": "<<emotion[i]<<"\n";
     }
