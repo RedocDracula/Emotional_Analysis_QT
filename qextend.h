@@ -13,7 +13,7 @@ extern std::vector <std::string > subtitle;
 extern std::vector<int> emotion;
 extern bool subLoaded;
 extern bool parsed;
-extern bool detect( cv::Mat& img);
+
 
 
 
@@ -26,19 +26,15 @@ class Qextend : public QLabel
     {}
 
     public slots:
-    void takeSnip(qint64 milliseconds) {
-        //
-        milliseconds/=1000;
-        std::string currTime =  QDateTime::fromTime_t(milliseconds).toUTC().toString("hh:mm:ss").toStdString();
-        // take snip...save snip open
-        // if face not fou
-
-
+    void timefunc(qint64 milliseconds)
+    {
+        milliseconds/=1000; // convert
+        this->setText(QDateTime::fromTime_t(milliseconds).toUTC().toString("hh:mm:ss"));
     }
 
         void setSubtitle (qint64 currtime) {
             if (subLoaded && parsed) {
-                    bool detect( cv::Mat& img)std:: vector <long long int> :: iterator pointer = lower_bound(startTime.begin(),startTime.end(),currtime);
+                    std:: vector <long long int> :: iterator pointer = lower_bound(startTime.begin(),startTime.end(),currtime);
                     int index = pointer - startTime.begin();
 
                     if (currtime<endTime[index-1]) {
