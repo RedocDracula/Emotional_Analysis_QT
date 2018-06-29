@@ -24,10 +24,13 @@ extern std:: vector <long long int> startTime;
 extern std:: vector <long long int> endTime;
 extern std::vector <std::string> subtitle;
 std::vector<int> emotion;
+std:: vector <long long int> skipstart;
+std:: vector <long long int> skipend;
 int snip_number = 0;
 void write();
 bool vidLoaded = false;
 bool subLoaded = false;
+bool check_box = false;
 
 
 bool detect(cv:: Mat & img);
@@ -185,8 +188,7 @@ void MainWindow::on_saveButton_clicked()
 
     bool validated = false;
 
-
-    validated = validate();
+     validated = validate();
 
     if (validated) {
 
@@ -297,7 +299,7 @@ void MainWindow::on_actionAdd_Sub_triggered()
 
 }
 
-void MainWindow::on_skipButton_clicked()
+void MainWindow::on_skipButton_clicked() // function to skip the current subtitle dialogue
 {
     qint64 current_time = player->position();
     std:: vector <long long int> :: iterator gotonext;
@@ -319,7 +321,7 @@ void MainWindow::on_replayButton_clicked()
 
 
 
-void MainWindow::on_extractButton_clicked()
+void MainWindow::on_extractButton_clicked() // function that extracts all the subtitle snips.
 {
     player->pause();
     int snip_number= 0;
@@ -399,7 +401,6 @@ void MainWindow::on_faceButton_clicked()
     mbox->setStandardButtons(0);
 
     QTemporaryDir dir;
-
     for(int index =0; index<total;index++) {
 
          snip_number++;
@@ -407,7 +408,7 @@ void MainWindow::on_faceButton_clicked()
          startsnip.erase(startsnip.end()-4 ,startsnip.end());
          endsnip.erase(endsnip.end()-4 ,endsnip.end());
          std::string imgLoc = dir.path().toStdString() + "/thumb.jpg";
-         std::string imageCommand = "ffmpeg -i " + source + " -ss " + startsnip + " -vframes 1 -y "  + imgLoc;
+         std::string imageCommand = "ffmpeg -i " + source + " -ss " + endsnip + " -vframes 1 -y "  + imgLoc;
          system (imageCommand.c_str());
 
          cv::Mat image =cv::imread(imgLoc.c_str(),1);
@@ -469,4 +470,7 @@ bool detect( cv::Mat& img)
         return true;
     }
 }
+
+
+
 

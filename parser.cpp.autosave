@@ -120,12 +120,12 @@ void xmlUpdate ( int snipNo, string timeBegin, string timeEnd, string age, strin
 
 string filterstring(string s) // function to remove all punctuations and apostrophe, also removes html tags.
 {
-    string o;
+    string o; // output string
     int check = 0;
     int newindex = 0;
     for(unsigned int i = 0 ; i < s.size() ; i++)
     {
-       if(s[i]=='\\')
+       if(s[i]=='\\') // removes Escape sequences from the text (like \n \t etc)
           i++;
 
        else if(s[i]=='<')
@@ -134,7 +134,7 @@ string filterstring(string s) // function to remove all punctuations and apostro
          check++;
        }
 
-       else if(s[i]=='>')
+       else if(s[i]=='>') // removes HTML tags from subtitles
        {
           int length;
            if(check>0)
@@ -153,7 +153,7 @@ string filterstring(string s) // function to remove all punctuations and apostro
        }
 
 
-        else if(isalpha(s[i])||s[i]==' ')
+        else if(isalpha(s[i])||s[i]==' ') //removes anything that is not an alphabet or space
           o.push_back(s[i]);
     }
 

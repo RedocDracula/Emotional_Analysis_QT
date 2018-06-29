@@ -35,7 +35,6 @@ private slots:
 
     void on_faceButton_clicked();
     
-    void on_autoskip_stateChanged(int arg1);
 
 private:
     Ui::MainWindow *ui;
